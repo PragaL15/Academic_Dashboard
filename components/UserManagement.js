@@ -88,10 +88,6 @@ export default function CustomFilterDemo() {
     }, 500);
   }, []);
 
-
- 
-
-
   // Template for numeric filtering
   const numericFilterTemplate = (value, setValue, placeholder) => {
     return (
