@@ -4,9 +4,9 @@ import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { InputNumber } from "primereact/inputnumber";
 import { Tag } from "primereact/tag";
-import { InputText } from 'primereact/inputtext';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
+import { InputText } from "primereact/inputtext";
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
@@ -34,51 +34,51 @@ export default function CustomFilterDemo() {
       verified: false,
       representative: { name: "Anna Fali" },
     },
-    // {
-    //   id: 3,
-    //   name: "Jane Smith",
-    //   academicWorkload: 20,
-    //   academicLab: 12,
-    //   status: "new",
-    //   verified: false,
-    //   representative: { name: "Anna Fali" },
-    // },
-    // {
-    //   id: 4,
-    //   name: "Jane Smith",
-    //   academicWorkload: 20,
-    //   academicLab: 12,
-    //   status: "new",
-    //   verified: false,
-    //   representative: { name: "Anna Fali" },
-    // },
-    // {
-    //   id: 5,
-    //   name: "Jane Smith",
-    //   academicWorkload: 20,
-    //   academicLab: 12,
-    //   status: "new",
-    //   verified: false,
-    //   representative: { name: "Anna Fali" },
-    // },
-    // {
-    //   id: 6,
-    //   name: "Jane Smith",
-    //   academicWorkload: 20,
-    //   academicLab: 12,
-    //   status: "new",
-    //   verified: false,
-    //   representative: { name: "Anna Fali" },
-    // },
-    // {
-    //   id: 7,
-    //   name: "Jane Smith",
-    //   academicWorkload: 20,
-    //   academicLab: 12,
-    //   status: "new",
-    //   verified: false,
-    //   representative: { name: "Anna Fali" },
-    // },
+    {
+      id: 3,
+      name: "Jane Smith",
+      academicWorkload: 20,
+      academicLab: 12,
+      status: "new",
+      verified: false,
+      representative: { name: "Anna Fali" },
+    },
+    {
+      id: 4,
+      name: "Jane Smith",
+      academicWorkload: 20,
+      academicLab: 12,
+      status: "new",
+      verified: false,
+      representative: { name: "Anna Fali" },
+    },
+    {
+      id: 5,
+      name: "Jane Smith",
+      academicWorkload: 20,
+      academicLab: 12,
+      status: "new",
+      verified: false,
+      representative: { name: "Anna Fali" },
+    },
+    {
+      id: 6,
+      name: "Jane Smith",
+      academicWorkload: 20,
+      academicLab: 12,
+      status: "new",
+      verified: false,
+      representative: { name: "Anna Fali" },
+    },
+    {
+      id: 7,
+      name: "Jane Smith",
+      academicWorkload: 20,
+      academicLab: 12,
+      status: "new",
+      verified: false,
+      representative: { name: "Anna Fali" },
+    },
   ];
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function CustomFilterDemo() {
   // Template for numeric filtering
   const numericFilterTemplate = (value, setValue, placeholder) => {
     return (
-      <div className="flex gap-1" style={{ border: '1px solid black' }}>
+      <div className="flex gap-1" style={{ border: "1px solid black" }}>
         <InputNumber
           value={value ? value[0] : null}
           onValueChange={(e) => setValue([e.value, value ? value[1] : null])}
@@ -115,7 +115,7 @@ export default function CustomFilterDemo() {
   const buttonTemplate = () => {
     return (
       <div className="card flex justify-content-center">
-        <Button label="Approve" />
+        <Button label="Approve"/>
       </div>
     );
   };
@@ -146,45 +146,50 @@ export default function CustomFilterDemo() {
       <DataTable
         value={customers}
         paginator
-        rows={1}
+        rows={3}
         dataKey="id"
         loading={loading}
         emptyMessage="No customers found."
         className="p-datatable-sm"
-        style={{ border: "1px solid grey",borderBottom:"1px solid grey"  }} // Grey border for table
-      >
+        paginatorClassName="custom-paginator"
+        style={{ 
+          border: "1px solid #eeeefd", 
+             
+          borderRadius: "10px 10px 10px 10px", 
+          overflow: "hidden"     
+        }} >
         <Column
           field="name"
           header="Name"
-          style={{ borderRight: "1px solid grey" , borderBottom:"1px solid grey" }} // Grey border for column
+          style={{ borderBottom: "1px solid #eeeeee", borderTop:"1px solid #eeeeee"}} // Grey border for column
         />
         <Column
           field="representative.name"
-          header="Representative"
+          header="Registration Number"
           body={representativeBodyTemplate}
-          style={{ borderRight: "1px solid grey" ,borderBottom:"1px solid grey"  }} // Grey border for column
+          style={{ borderBottom: "1px solid #eeeeee" }} // Grey border for column
         />
         <Column
           field="academicWorkload"
-          header="Academic Workload"
-          style={{ borderRight: "1px solid grey",borderBottom:"1px solid grey"  }} // Grey border for column
+          header="Year"
+          style={{ borderBottom: "1px solid #eeeeee" }} // Grey border for column
         />
         <Column
           field="academicLab"
-          header="Academic Lab"
-          style={{ borderRight: "1px solid grey",borderBottom:"1px solid grey"  }} // Grey border for column
+          header="email"
+          style={{ borderBottom: "1px solid #eeeeee" }} // Grey border for column
         />
         <Column
           field="status"
           header="Status"
           body={(rowData) => <Tag value={rowData.status} />}
-          style={{ borderRight: "1px solid grey",borderBottom:"1px solid grey"  }} // Grey border for column
+          style={{ borderBottom: "1px solid #eeeeee" }} // Grey border for column
         />
         <Column
           field="approval"
           header="Approval Status"
           body={buttonTemplate}
-          style={{ borderRight: "1px solid grey",borderBottom:"1px solid grey"  }} // Grey border for column
+          style={{ borderBottom: "1px solid #eeeeee" }} // Grey border for column
         />
       </DataTable>
     </div>
