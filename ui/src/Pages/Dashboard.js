@@ -1,6 +1,6 @@
 import React from 'react';
 import Sidebar from '../components/sidebar';
-import UserTable from '../components/UserManagement'
+import UserTable from '../components/Dashboard/UserManagement'
 import TopBar from '../components/topbar'
 const Dashboard = () => {
   return ( 

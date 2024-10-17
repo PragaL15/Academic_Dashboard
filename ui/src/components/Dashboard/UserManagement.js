@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { InputNumber } from "primereact/inputnumber";
+import { Checkbox } from "primereact/checkbox";
 import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
+import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
+import { Toast } from "primereact/toast";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "../../styles/checkbox.css";
 
 export default function CustomFilterDemo() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
+  const [checkedItems, setCheckedItems] = useState([]); // Track selected checkboxes
+  const toast = useRef(null); // Ref for toast notifications
 
   const staticCustomers = [
     {
@@ -36,49 +44,14 @@ export default function CustomFilterDemo() {
     },
     {
       id: 3,
-      name: "Jane Smith",
-      academicWorkload: 20,
-      academicLab: 12,
-      status: "new",
-      verified: false,
-      representative: { name: "Anna Fali" },
+      name: "Alice Johnson",
+      academicWorkload: 15,
+      academicLab: 8,
+      status: "qualified",
+      verified: true,
+      representative: { name: "Liza Bean" },
     },
-    {
-      id: 4,
-      name: "Jane Smith",
-      academicWorkload: 20,
-      academicLab: 12,
-      status: "new",
-      verified: false,
-      representative: { name: "Anna Fali" },
-    },
-    {
-      id: 5,
-      name: "Jane Smith",
-      academicWorkload: 20,
-      academicLab: 12,
-      status: "new",
-      verified: false,
-      representative: { name: "Anna Fali" },
-    },
-    {
-      id: 6,
-      name: "Jane Smith",
-      academicWorkload: 20,
-      academicLab: 12,
-      status: "new",
-      verified: false,
-      representative: { name: "Anna Fali" },
-    },
-    {
-      id: 7,
-      name: "Jane Smith",
-      academicWorkload: 20,
-      academicLab: 12,
-      status: "new",
-      verified: false,
-      representative: { name: "Anna Fali" },
-    },
+    // Add more customers as needed
   ];
 
   useEffect(() => {
@@ -88,7 +61,18 @@ export default function CustomFilterDemo() {
     }, 500);
   }, []);
 
-  // Template for numeric filtering
+  const IndividualApp = () =>{
+    
+  }
+
+  const AppOrRej = () => {
+    return (
+      <div className="card flex justify-content-center bg-blue-900 text-slate-100 rounded -md text-xs p-2">
+        <Button label="Submit" />
+      </div>
+    );
+  };
+
   const numericFilterTemplate = (value, setValue, placeholder) => {
     return (
       <div className="flex gap-1" style={{ border: "1px solid black" }}>
@@ -108,16 +92,48 @@ export default function CustomFilterDemo() {
     );
   };
 
-  const representativeBodyTemplate = (rowData) => {
-    return <span>{rowData.representative.name}</span>;
+  // Handle checkbox changes
+  const handleCheckboxChange = (e, id) => {
+    let updatedItems = [...checkedItems];
+    if (e.checked) {
+      updatedItems.push(id); // Add selected ID
+    } else {
+      updatedItems = updatedItems.filter((item) => item !== id); // Remove deselected ID
+    }
+    setCheckedItems(updatedItems);
   };
 
-  const buttonTemplate = () => {
-    return (
-      <div className="card flex justify-content-center bg-red-700 ">
-        <Button label="Approve" />
-      </div>
-    );
+  // Show confirmation popup
+  const handleApprove = (event) => {
+    confirmPopup({
+      target: event.currentTarget,
+      message: "Are you sure you want to approve?",
+      icon: "pi pi-exclamation-triangle",
+      accept: () => {
+        toast.current.show({
+          severity: "info",
+          summary: "Approved",
+          detail: `Items with IDs: ${checkedItems.join(
+            ", "
+          )} have been approved`,
+          life: 3000,
+        });
+        setCheckedItems([]); // Clear checked items after approval
+      },
+      reject: () => {
+        toast.current.show({
+          severity: "warn",
+          summary: "Rejected",
+          detail: "Approval has been rejected",
+          life: 3000,
+        });
+        setCheckedItems([]);
+      },
+    });
+  };
+
+  const representativeBodyTemplate = (rowData) => {
+    return <span>{rowData.representative.name}</span>;
   };
 
   return (
@@ -137,10 +153,6 @@ export default function CustomFilterDemo() {
         </div>
       </div>
 
-      {/* {showFilter && (
-     
-      )} */}
-
       <DataTable
         value={customers}
         paginator
@@ -153,39 +165,44 @@ export default function CustomFilterDemo() {
         style={{
           border: "1px solid #eeeefd",
           marginTop: "10px",
-          borderRadius: "10px 10px 10px 10px",
+          borderRadius: "10px",
           overflow: "hidden",
         }}
       >
         <Column
-          field="name"
-          header="Name"
-          style={{
-            borderBottom: "1px solid #eeeeee",
-            borderTop: "1px solid #eeeeee",
-          }}
+          field="id"
+          header="Select"
+          body={(rowData) => (
+            <Checkbox
+              inputId={`customCheckbox-${rowData.id}`}
+              onChange={(e) => handleCheckboxChange(e, rowData.id)}
+              checked={checkedItems.includes(rowData.id)}
+              className="custom-checkbox"
+            />
+          )}
         />
+        <Column field="name" header="Name" />
         <Column
           field="representative.name"
           header="Registration Number"
           body={representativeBodyTemplate}
-          style={{ borderBottom: "1px solid #eeeeee" }}
         />
-        <Column
-          field="academicWorkload"
-          header="Year"
-          style={{ borderBottom: "1px solid #eeeeee" }}
-        />
+        <Column field="academicWorkload" header="Year" />
+        <Column field="academicLab" header="Edit" body={<BorderColorIcon />} />
         <Column
           field="academicLab"
-          header="email"
-          style={{ borderBottom: "1px solid #eeeeee" }}
+          header="View Subject"
+          body={<RemoveRedEyeIcon />}
         />
         <Column
           field="status"
           header="Status"
           body={(rowData) => <Tag value={rowData.status} />}
-          style={{ borderBottom: "1px solid #eeeeee" }}
+        />
+        <Column
+          field="condition"
+          header="App/rej"
+          body={AppOrRej}
         />
         <Column
           field="approval"
@@ -204,9 +221,18 @@ export default function CustomFilterDemo() {
               }}
             />
           )}
-          style={{ borderBottom: "1px solid #eeeeee" }}
         />
       </DataTable>
+
+      {/* Show Approve button if more than 1 checkbox is selected */}
+      {checkedItems.length > 0 && (
+        <div className="card flex justify-content-center mt-3">
+          <Button onClick={handleApprove} label="Approve" icon="pi pi-check" />
+        </div>
+      )}
+
+      <Toast ref={toast} />
+      <ConfirmPopup />
     </div>
   );
 }
