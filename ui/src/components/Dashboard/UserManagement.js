@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
-import { InputNumber } from "primereact/inputnumber";
 import { Checkbox } from "primereact/checkbox";
 import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
@@ -29,7 +28,7 @@ export default function CustomFilterDemo() {
       name: "John Doe",
       academicWorkload: 25,
       academicLab: 10,
-      status: "qualified",
+      status: "Initiated",
       verified: true,
       representative: { name: "Amy Elsner" },
     },
@@ -38,7 +37,7 @@ export default function CustomFilterDemo() {
       name: "Jane Smith",
       academicWorkload: 20,
       academicLab: 12,
-      status: "new",
+      status: "Initiated",
       verified: false,
       representative: { name: "Anna Fali" },
     },
@@ -47,11 +46,10 @@ export default function CustomFilterDemo() {
       name: "Alice Johnson",
       academicWorkload: 15,
       academicLab: 8,
-      status: "qualified",
+      status: "Initiated",
       verified: true,
       representative: { name: "Liza Bean" },
     },
-    // Add more customers as needed
   ];
 
   useEffect(() => {
@@ -61,64 +59,41 @@ export default function CustomFilterDemo() {
     }, 500);
   }, []);
 
-  const IndividualApp = () =>{
-    
-  }
-
-  const AppOrRej = () => {
-    return (
-      <div className="card flex justify-content-center bg-blue-900 text-slate-100 rounded -md text-xs p-2">
-        <Button label="Submit" />
-      </div>
-    );
-  };
-
-  const numericFilterTemplate = (value, setValue, placeholder) => {
-    return (
-      <div className="flex gap-1" style={{ border: "1px solid black" }}>
-        <InputNumber
-          value={value ? value[0] : null}
-          onValueChange={(e) => setValue([e.value, value ? value[1] : null])}
-          placeholder={`Min ${placeholder}`}
-          min={0}
-        />
-        <InputNumber
-          value={value ? value[1] : null}
-          onValueChange={(e) => setValue([value ? value[0] : null, e.value])}
-          placeholder={`Max ${placeholder}`}
-          min={0}
-        />
-      </div>
-    );
-  };
-
-  // Handle checkbox changes
   const handleCheckboxChange = (e, id) => {
     let updatedItems = [...checkedItems];
     if (e.checked) {
-      updatedItems.push(id); // Add selected ID
+      updatedItems.push(id);
     } else {
-      updatedItems = updatedItems.filter((item) => item !== id); // Remove deselected ID
+      updatedItems = updatedItems.filter((item) => item !== id);
     }
     setCheckedItems(updatedItems);
   };
 
-  // Show confirmation popup
+  // Handle approval and rejection process
   const handleApprove = (event) => {
     confirmPopup({
       target: event.currentTarget,
       message: "Are you sure you want to approve?",
       icon: "pi pi-exclamation-triangle",
+      acceptClassName: "bg-green-500 text-white p-1 ml-3",
+      rejectClassName: "bg-red-500 text-white p-1",
       accept: () => {
         toast.current.show({
           severity: "info",
           summary: "Approved",
-          detail: `Items with IDs: ${checkedItems.join(
-            ", "
-          )} have been approved`,
+          detail: `Items with IDs: ${checkedItems.join(", ")} have been approved`,
           life: 3000,
         });
-        setCheckedItems([]); // Clear checked items after approval
+
+        // Update the status of the approved customers
+        setCustomers((prevCustomers) =>
+          prevCustomers.map((customer) =>
+            checkedItems.includes(customer.id)
+              ? { ...customer, status: "Approved" }
+              : customer
+          )
+        );
+        setCheckedItems([]); // Clear the selected items after approval
       },
       reject: () => {
         toast.current.show({
@@ -127,7 +102,16 @@ export default function CustomFilterDemo() {
           detail: "Approval has been rejected",
           life: 3000,
         });
-        setCheckedItems([]);
+
+        // Update the status of the rejected customers
+        setCustomers((prevCustomers) =>
+          prevCustomers.map((customer) =>
+            checkedItems.includes(customer.id)
+              ? { ...customer, status: "Rejected" }
+              : customer
+          )
+        );
+        setCheckedItems([]); // Clear the selected items after rejection
       },
     });
   };
@@ -189,21 +173,8 @@ export default function CustomFilterDemo() {
         />
         <Column field="academicWorkload" header="Year" />
         <Column field="academicLab" header="Edit" body={<BorderColorIcon />} />
-        <Column
-          field="academicLab"
-          header="View Subject"
-          body={<RemoveRedEyeIcon />}
-        />
-        <Column
-          field="status"
-          header="Status"
-          body={(rowData) => <Tag value={rowData.status} />}
-        />
-        <Column
-          field="condition"
-          header="App/rej"
-          body={AppOrRej}
-        />
+        <Column field="academicLab" header="View Subject" body={<RemoveRedEyeIcon />} />
+        <Column field="condition" header="App/rej" body={() => <Button label="Submit" />} />
         <Column
           field="approval"
           header="Approval Status"
@@ -212,11 +183,13 @@ export default function CustomFilterDemo() {
               value={rowData.status}
               style={{
                 backgroundColor:
-                  rowData.status === "new"
+                  rowData.status === "Rejected"
                     ? "red"
-                    : rowData.status === "qualified"
+                    : rowData.status === "Approved"
                     ? "green"
-                    : "gray",
+                    : rowData.status === "Initiated"
+                    ? "blue"
+                    : "gray", // Fallback color if none of the conditions are met
                 color: "white",
               }}
             />
