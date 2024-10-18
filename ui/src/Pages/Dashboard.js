@@ -7,8 +7,7 @@ const Dashboard = () => {
     <div style={{ display: 'flex' }}>
         <TopBar/>
       <Sidebar>
-
-        <UserTable/>
+       <UserTable/>
       </Sidebar>
 
     </div>
