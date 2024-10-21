@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import GoogleLogin from "../components/Login/loginButton";
-import GitHubIcon from "../components/Login/githubicon";
 function Login() {
   const [token, setToken] = useState(null);
 

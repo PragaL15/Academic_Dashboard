@@ -68,20 +68,20 @@ export default function CustomFilterDemo() {
     }
     setCheckedItems(updatedItems);
   };
-
-  // Handle approval and rejection process
   const handleApprove = (event) => {
     confirmPopup({
       target: event.currentTarget,
       message: "Are you sure you want to approve?",
       icon: "pi pi-exclamation-triangle",
-      acceptClassName: "bg-green-500 text-white p-1 ml-3",
+      acceptClassName: "bg-green-500 text-white p-1 ml-3 hover:none",
       rejectClassName: "bg-red-500 text-white p-1",
       accept: () => {
         toast.current.show({
           severity: "info",
           summary: "Approved",
-          detail: `Items with IDs: ${checkedItems.join(", ")} have been approved`,
+          detail: `Request with IDs: ${checkedItems.join(
+            ", "
+          )} have been approved`,
           life: 3000,
         });
 
@@ -173,8 +173,11 @@ export default function CustomFilterDemo() {
         />
         <Column field="academicWorkload" header="Year" />
         <Column field="academicLab" header="Edit" body={<BorderColorIcon />} />
-        <Column field="academicLab" header="View Subject" body={<RemoveRedEyeIcon />} />
-        <Column field="condition" header="App/rej" body={() => <Button label="Submit" />} />
+        <Column
+          field="academicLab"
+          header="View Subject"
+          body={<RemoveRedEyeIcon />}
+        />
         <Column
           field="approval"
           header="Approval Status"
@@ -189,7 +192,7 @@ export default function CustomFilterDemo() {
                     ? "green"
                     : rowData.status === "Initiated"
                     ? "blue"
-                    : "gray", // Fallback color if none of the conditions are met
+                    : "gray",
                 color: "white",
               }}
             />
@@ -197,10 +200,13 @@ export default function CustomFilterDemo() {
         />
       </DataTable>
 
-      {/* Show Approve button if more than 1 checkbox is selected */}
       {checkedItems.length > 0 && (
-        <div className="card flex justify-content-center mt-3">
-          <Button onClick={handleApprove} label="Approve" icon="pi pi-check" />
+        <div className="card flex justify-content-center bg-blue-900 text-sm p-1 rounded-md text-cyan-50 w-16 h-7 mt-3 ">
+          <Button
+            onClick={handleApprove}
+            label="Approve"
+            className="p-button-primary"
+          />
         </div>
       )}
 
