@@ -1,62 +1,137 @@
-import React from 'react'; 
+import React, { useState } from 'react';
 import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 
 export default function UploadingPage() {
+    const [subjects, setSubjects] = useState(1);  // Default subject count is 1
+    const [subjectFields, setSubjectFields] = useState([]);
+
+    const handleSubjectsChange = (e) => {
+        const value = parseInt(e.target.value);
+        setSubjects(value);
+
+        const fields = [];
+        for (let i = 1; i <= value; i++) {
+            fields.push({
+                semester: '',
+                department: '',
+                courseCode: '',
+                courseTitle: '',
+                courseType: '',
+                courseNature: ''
+            });
+        }
+        setSubjectFields(fields);
+    };
+
+    const handleInputChange = (index, field, value) => {
+        const updatedFields = [...subjectFields];
+        updatedFields[index][field] = value;
+        setSubjectFields(updatedFields);
+    };
+
     return (
         <div className="card">
             <div className="mb-4">
-                <label htmlFor="integer" className="font-bold block mb-2">
-                    Integer
+                <label className="font-bold block mb-2">
+                    Name:
                 </label>
-                <InputText id="integer" keyfilter="int" className="w-full" />
+                <InputText id="name" className="w-full p-inputtext-lg" />
             </div>
+
             <div className="mb-4">
-                <label htmlFor="number" className="font-bold block mb-2">
-                    Number
+                <label htmlFor="department" className="font-bold block mb-2">
+                    Department:
                 </label>
-                <InputText id="number" keyfilter="num" className="w-full" />
+                <InputText id="department" className="w-full p-inputtext-lg" />
             </div>
+
             <div className="mb-4">
-                <label htmlFor="money" className="font-bold block mb-2">
-                    Money
+                <label htmlFor="designation" className="font-bold block mb-2">
+                    Designation:
                 </label>
-                <InputText id="money" keyfilter="money" className="w-full" />
+                <InputText id="designation" className="w-full p-inputtext-lg" />
             </div>
+
             <div className="mb-4">
-                <label htmlFor="hex" className="font-bold block mb-2">
-                    Hex
+                <label htmlFor="reporting" className="font-bold block mb-2">
+                    Reporting to:
                 </label>
-                <InputText id="hex" keyfilter="hex" className="w-full" />
+                <InputText id="reporting" className="w-full p-inputtext-lg" />
             </div>
+
             <div className="mb-4">
-                <label htmlFor="alphabetic" className="font-bold block mb-2">
-                    Alphabetic
+                <label htmlFor="responsibilities" className="font-bold block mb-2">
+                    Responsibilities:
                 </label>
-                <InputText id="alphabetic" keyfilter="alpha" className="w-full" />
+                <InputText id="responsibilities" className="w-full p-inputtext-lg" />
             </div>
+
             <div className="mb-4">
-                <label htmlFor="alphanumeric" className="font-bold block mb-2">
-                    Alphanumeric
+                <label htmlFor="academicWorkloadTheory" className="font-bold block mb-2">
+                    Academic Workload Theory:
                 </label>
-                <InputText id="alphanumeric" keyfilter="alphanum" className="w-full" />
+                <InputText id="academicWorkloadTheory" keyfilter="int" className="w-full p-inputtext-lg" />
             </div>
+
             <div className="mb-4">
-                <label htmlFor="pint" className="font-bold block mb-2">
-                    Positive Integer
+                <label htmlFor="academicWorkloadLab" className="font-bold block mb-2">
+                    Academic Workload Lab:
                 </label>
-                <InputText id="pint" keyfilter="pint" className="w-full" />
+                <InputText id="academicWorkloadLab" keyfilter="int" className="w-full p-inputtext-lg" />
             </div>
+
             <div className="mb-4">
-                <label htmlFor="pnum" className="font-bold block mb-2">
-                    Positive Number
+                <label htmlFor="numSubjects" className="font-bold block mb-2">
+                    No of Subjects:
                 </label>
-                <InputText id="pnum" keyfilter="pnum" className="w-full" />
+                <InputText id="numSubjects" keyfilter="int" value={subjects} onChange={handleSubjectsChange} className="w-full p-inputtext-lg" />
             </div>
-            <div className="mb-4">
-                <label htmlFor="email" className="font-bold block mb-2">
-                    Email
-                </label>
-                <InputText id="email" keyfilter="email" className="w-full" />
+
+            {/* Dynamic subject fields based on the number of subjects */}
+            {subjectFields.map((subject, index) => (
+                <div key={index} className="card mt-4">
+                    <h4 className="font-bold mb-2">Subject {index + 1}</h4>
+
+                    <div className="mb-4">
+                        <label className="font-bold block mb-2">
+                            Subject {index + 1} Department:
+                        </label>
+                        <InputText className="w-full p-inputtext-lg" value={subject.department} onChange={(e) => handleInputChange(index, 'department', e.target.value)} />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="font-bold block mb-2">
+                            Subject {index + 1} Course Code:
+                        </label>
+                        <InputText className="w-full p-inputtext-lg" value={subject.courseCode} onChange={(e) => handleInputChange(index, 'courseCode', e.target.value)} />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="font-bold block mb-2">
+                            Subject {index + 1} Course Title:
+                        </label>
+                        <InputText className="w-full p-inputtext-lg" value={subject.courseTitle} onChange={(e) => handleInputChange(index, 'courseTitle', e.target.value)} />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="font-bold block mb-2">
+                            Subject {index + 1} Course Type:
+                        </label>
+                        <InputText className="w-full p-inputtext-lg" value={subject.courseType} onChange={(e) => handleInputChange(index, 'courseType', e.target.value)} />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="font-bold block mb-2">
+                            Subject {index + 1} Course Nature:
+                        </label>
+                        <InputText className="w-full p-inputtext-lg" value={subject.courseNature} onChange={(e) => handleInputChange(index, 'courseNature', e.target.value)} />
+                    </div>
+                </div>
+            ))}
+
+            <div className="mt-4">
+                <Button label="Submit" className="w-full" />
             </div>
         </div>
     );
