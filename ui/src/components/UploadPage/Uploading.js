@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 
 export default function UploadingPage() {
-    const [subjects, setSubjects] = useState(1);  // Default subject count is 1
-    const [subjectFields, setSubjectFields] = useState([]);
+    const [subjects, setSubjects] = useState(0); 
+    const [subjectFields, setSubjectFields] = useState([{ 
+        department: '', 
+        courseCode: '', 
+        courseTitle: '', 
+        courseType: '', 
+        courseNature: '' 
+    }]);
 
-    const handleSubjectsChange = (e) => {
-        const value = parseInt(e.target.value);
-        setSubjects(value);
-
+    // UseEffect to update fields when the number of subjects changes
+    useEffect(() => {
         const fields = [];
-        for (let i = 1; i <= value; i++) {
+        for (let i = 1; i <= subjects; i++) {
             fields.push({
-                semester: '',
                 department: '',
                 courseCode: '',
                 courseTitle: '',
@@ -22,6 +25,13 @@ export default function UploadingPage() {
             });
         }
         setSubjectFields(fields);
+    }, [subjects]);
+
+    const handleSubjectsChange = (e) => {
+        const value = parseInt(e.target.value);
+        if (!isNaN(value) && value > 0) {
+            setSubjects(value);
+        }
     };
 
     const handleInputChange = (index, field, value) => {
@@ -88,7 +98,7 @@ export default function UploadingPage() {
                 <InputText id="numSubjects" keyfilter="int" value={subjects} onChange={handleSubjectsChange} className="w-full p-inputtext-lg" />
             </div>
 
-            {/* Dynamic subject fields based on the number of subjects */}
+            {/* Render the dynamic fields based on number of subjects */}
             {subjectFields.map((subject, index) => (
                 <div key={index} className="card mt-4">
                     <h4 className="font-bold mb-2">Subject {index + 1}</h4>
