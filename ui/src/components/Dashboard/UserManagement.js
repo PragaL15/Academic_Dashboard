@@ -10,17 +10,19 @@ import { InputIcon } from "primereact/inputicon";
 import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
 import { Toast } from "primereact/toast";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "../../styles/checkbox.css";
+import { Dialog } from "primereact/dialog"; // Import Dialog
 
 export default function CustomFilterDemo() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
-  const [checkedItems, setCheckedItems] = useState([]); 
-  const toast = useRef(null); 
+  const [checkedItems, setCheckedItems] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null); // State for selected customer
+  const [visible, setVisible] = useState(false); // State for dialog visibility
+  const toast = useRef(null);
 
   const staticCustomers = [
     {
@@ -92,7 +94,7 @@ export default function CustomFilterDemo() {
               : customer
           )
         );
-        setCheckedItems([]); 
+        setCheckedItems([]);
       },
       reject: () => {
         toast.current.show({
@@ -107,6 +109,11 @@ export default function CustomFilterDemo() {
 
   const representativeBodyTemplate = (rowData) => {
     return <span>{rowData.representative.name}</span>;
+  };
+
+  const openDialog = (customer) => {
+    setSelectedCustomer(customer);
+    setVisible(true);
   };
 
   return (
@@ -216,6 +223,16 @@ export default function CustomFilterDemo() {
             />
           )}
         />
+        <Column
+          header="View"
+          body={(rowData) => (
+            <Button
+              icon={<RemoveRedEyeIcon />}
+              onClick={() => openDialog(rowData)} // Open dialog on button click
+              className="p-button-text"
+            />
+          )}
+        />
       </DataTable>
 
       {checkedItems.length > 0 && (
@@ -232,6 +249,49 @@ export default function CustomFilterDemo() {
           />
         </div>
       )}
+      
+      {/* Dialog for viewing customer details */}
+      <Dialog
+        header="Customer Details"
+        visible={visible}
+        position="top"
+        style={{ minWidth: "50vw" }}
+        onHide={() => setVisible(false)}
+        draggable={false}
+        resizable={false}
+      >
+        {selectedCustomer && (
+          <div className="p-fluid">
+            <div className="field">
+              <label htmlFor="name">Name:</label>
+              <InputText id="name" value={selectedCustomer.name} readOnly />
+            </div>
+            <div className="field">
+              <label htmlFor="academicWorkload">Academic Workload:</label>
+              <InputText id="academicWorkload" value={selectedCustomer.academicWorkload} readOnly />
+            </div>
+            <div className="field">
+              <label htmlFor="academicLab">Academic Lab:</label>
+              <InputText id="academicLab" value={selectedCustomer.academicLab} readOnly />
+            </div>
+            <div className="field">
+              <label htmlFor="status">Status:</label>
+              <Tag value={selectedCustomer.status} style={{
+                backgroundColor:
+                  selectedCustomer.status === "Rejected"
+                    ? "red"
+                    : selectedCustomer.status === "Approved"
+                    ? "green"
+                    : selectedCustomer.status === "Initiated"
+                    ? "blue"
+                    : "gray",
+                color: "white",
+              }} />
+            </div>
+          </div>
+        )}
+      </Dialog>
+
       <Toast ref={toast} />
       <ConfirmPopup />
     </div>
