@@ -15,13 +15,12 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "../../styles/checkbox.css";
 
-
 export default function CustomFilterDemo() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
-  const [checkedItems, setCheckedItems] = useState([]); // Track selected checkboxes
-  const toast = useRef(null); // Ref for toast notifications
+  const [checkedItems, setCheckedItems] = useState([]); 
+  const toast = useRef(null); 
 
   const staticCustomers = [
     {
@@ -69,32 +68,31 @@ export default function CustomFilterDemo() {
     }
     setCheckedItems(updatedItems);
   };
-  const handleApprove = (event) => {
+
+  const handleApproval = (event, isApproved) => {
+    const message = isApproved ? "Approve" : "Reject";
     confirmPopup({
       target: event.currentTarget,
-      message: "Are you sure you want to approve?",
+      message: `Are you sure you want to ${message.toLowerCase()}?`,
       icon: "pi pi-exclamation-triangle",
       acceptClassName: "bg-green-500 text-white p-1 ml-3 hover:none",
       rejectClassName: "bg-red-500 text-white p-1",
       accept: () => {
         toast.current.show({
           severity: "info",
-          summary: "Approved",
-          detail: `Request with IDs: ${checkedItems.join(
-            ", "
-          )} have been approved`,
+          summary: `${message}d`,
+          detail: `Request with IDs: ${checkedItems.join(", ")} have been ${message.toLowerCase()}d`,
           life: 3000,
         });
 
-        // Update the status of the approved customers
         setCustomers((prevCustomers) =>
           prevCustomers.map((customer) =>
             checkedItems.includes(customer.id)
-              ? { ...customer, status: "Approved" }
+              ? { ...customer, status: isApproved ? "Approved" : "Rejected" }
               : customer
           )
         );
-        setCheckedItems([]); // Clear the selected items after approval
+        setCheckedItems([]); 
       },
       reject: () => {
         toast.current.show({
@@ -103,16 +101,6 @@ export default function CustomFilterDemo() {
           detail: "Approval has been rejected",
           life: 3000,
         });
-
-        // Update the status of the rejected customers
-        setCustomers((prevCustomers) =>
-          prevCustomers.map((customer) =>
-            checkedItems.includes(customer.id)
-              ? { ...customer, status: "Rejected" }
-              : customer
-          )
-        );
-        setCheckedItems([]); // Clear the selected items after rejection
       },
     });
   };
@@ -172,12 +160,41 @@ export default function CustomFilterDemo() {
           header="Registration Number"
           body={representativeBodyTemplate}
         />
-        <Column field="academicWorkload" header="Year" />
-        <Column field="academicLab" header="Edit" body={<BorderColorIcon />} />
-        <Column
-          field="academicLab"
-          header="View Subject"
-          body={<RemoveRedEyeIcon />}
+        <Column 
+          field="academicWorkload" 
+          header="Academic Workload Theory" 
+          body={(rowData) => (
+            <InputText 
+              type="number" 
+              value={rowData.academicWorkload} 
+              onChange={(e) => {
+                const newWorkload = parseInt(e.target.value, 10) || 0;
+                setCustomers(prevCustomers =>
+                  prevCustomers.map(customer =>
+                    customer.id === rowData.id ? { ...customer, academicWorkload: newWorkload } : customer
+                  )
+                );
+              }} 
+            />
+          )}
+        />
+        <Column 
+          field="academicLab" 
+          header="Academic Theory Lab" 
+          body={(rowData) => (
+            <InputText 
+              type="number" 
+              value={rowData.academicLab} 
+              onChange={(e) => {
+                const newLab = parseInt(e.target.value, 10) || 0;
+                setCustomers(prevCustomers =>
+                  prevCustomers.map(customer =>
+                    customer.id === rowData.id ? { ...customer, academicLab: newLab } : customer
+                  )
+                );
+              }} 
+            />
+          )}
         />
         <Column
           field="approval"
@@ -202,15 +219,19 @@ export default function CustomFilterDemo() {
       </DataTable>
 
       {checkedItems.length > 0 && (
-        <div className="card flex justify-content-center bg-blue-900 text-sm p-1 rounded-md text-cyan-50 w-16 h-7 mt-3 ">
+        <div className="flex justify-content-center mt-3">
           <Button
-            onClick={handleApprove}
+            onClick={(e) => handleApproval(e, true)} // Approve
             label="Approve"
-            className="p-button-primary"
+            className="p-button-success mr-2"
+          />
+          <Button
+            onClick={(e) => handleApproval(e, false)} // Reject
+            label="Reject"
+            className="p-button-danger"
           />
         </div>
       )}
-
       <Toast ref={toast} />
       <ConfirmPopup />
     </div>

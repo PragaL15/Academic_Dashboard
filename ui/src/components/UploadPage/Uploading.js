@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
+import '../../styles/uploadpage.css'
 
 export default function UploadingPage() {
     const [subjects, setSubjects] = useState(0); 
@@ -12,7 +13,6 @@ export default function UploadingPage() {
         courseNature: '' 
     }]);
 
-    // UseEffect to update fields when the number of subjects changes
     useEffect(() => {
         const fields = [];
         for (let i = 1; i <= subjects; i++) {
@@ -41,108 +41,83 @@ export default function UploadingPage() {
     };
 
     return (
-        <div className="card">
-            <div className="mb-4">
-                <label className="font-bold block mb-2">
-                    Name:
-                </label>
-                <InputText id="name" className="w-full p-inputtext-lg" />
+        <>
+           <h2 className="section-title">Upload Course Details</h2>
+         
+        <div className="card premium-card">   
+            <div className="field">
+                <label>Name:</label>
+                <InputText id="name" className="inputfield" placeholder="Enter your name" />
             </div>
 
-            <div className="mb-4">
-                <label htmlFor="department" className="font-bold block mb-2">
-                    Department:
-                </label>
-                <InputText id="department" className="w-full p-inputtext-lg" />
+            <div className="field">
+                <label>Department:</label>
+                <InputText id="department" className="inputfield" placeholder="Enter department" />
             </div>
 
-            <div className="mb-4">
-                <label htmlFor="designation" className="font-bold block mb-2">
-                    Designation:
-                </label>
-                <InputText id="designation" className="w-full p-inputtext-lg" />
+            <div className="field">
+                <label>Designation:</label>
+                <InputText id="designation" className="inputfield" placeholder="Enter designation" />
             </div>
 
-            <div className="mb-4">
-                <label htmlFor="reporting" className="font-bold block mb-2">
-                    Reporting to:
-                </label>
-                <InputText id="reporting" className="w-full p-inputtext-lg" />
+            <div className="field">
+                <label>Reporting to:</label>
+                <InputText id="reporting" className="inputfield" placeholder="Enter reporting officer" />
             </div>
 
-            <div className="mb-4">
-                <label htmlFor="responsibilities" className="font-bold block mb-2">
-                    Responsibilities:
-                </label>
-                <InputText id="responsibilities" className="w-full p-inputtext-lg" />
+            <div className="field">
+                <label>Responsibilities:</label>
+                <InputText id="responsibilities" className="inputfield" placeholder="Enter responsibilities" />
             </div>
 
-            <div className="mb-4">
-                <label htmlFor="academicWorkloadTheory" className="font-bold block mb-2">
-                    Academic Workload Theory:
-                </label>
-                <InputText id="academicWorkloadTheory" keyfilter="int" className="w-full p-inputtext-lg" />
+            <div className="field">
+                <label>Academic Workload Theory:</label>
+                <InputText id="academicWorkloadTheory" keyfilter="int" className="inputfield" placeholder="Enter theory workload" />
             </div>
 
-            <div className="mb-4">
-                <label htmlFor="academicWorkloadLab" className="font-bold block mb-2">
-                    Academic Workload Lab:
-                </label>
-                <InputText id="academicWorkloadLab" keyfilter="int" className="w-full p-inputtext-lg" />
+            <div className="field">
+                <label>Academic Workload Lab:</label>
+                <InputText id="academicWorkloadLab" keyfilter="int" className="inputfield" placeholder="Enter lab workload" />
             </div>
 
-            <div className="mb-4">
-                <label htmlFor="numSubjects" className="font-bold block mb-2">
-                    No of Subjects:
-                </label>
-                <InputText id="numSubjects" keyfilter="int" value={subjects} onChange={handleSubjectsChange} className="w-full p-inputtext-lg" />
+            <div className="field">
+                <label>No of Subjects:</label>
+                <InputText id="numSubjects" keyfilter="int" value={subjects} onChange={handleSubjectsChange} className="inputfield" />
             </div>
 
-            {/* Render the dynamic fields based on number of subjects */}
             {subjectFields.map((subject, index) => (
-                <div key={index} className="card mt-4">
-                    <h4 className="font-bold mb-2">Subject {index + 1}</h4>
+                <div key={index} className="subject-card">
+                    <h4>Subject {index + 1}</h4>
 
-                    <div className="mb-4">
-                        <label className="font-bold block mb-2">
-                            Subject {index + 1} Department:
-                        </label>
-                        <InputText className="w-full p-inputtext-lg" value={subject.department} onChange={(e) => handleInputChange(index, 'department', e.target.value)} />
+                    <div className="field">
+                        <label>Subject {index + 1} Department:</label>
+                        <InputText value={subject.department} onChange={(e) => handleInputChange(index, 'department', e.target.value)} className="inputfield" />
                     </div>
 
-                    <div className="mb-4">
-                        <label className="font-bold block mb-2">
-                            Subject {index + 1} Course Code:
-                        </label>
-                        <InputText className="w-full p-inputtext-lg" value={subject.courseCode} onChange={(e) => handleInputChange(index, 'courseCode', e.target.value)} />
+                    <div className="field">
+                        <label>Subject {index + 1} Course Code:</label>
+                        <InputText value={subject.courseCode} onChange={(e) => handleInputChange(index, 'courseCode', e.target.value)} className="inputfield" />
                     </div>
 
-                    <div className="mb-4">
-                        <label className="font-bold block mb-2">
-                            Subject {index + 1} Course Title:
-                        </label>
-                        <InputText className="w-full p-inputtext-lg" value={subject.courseTitle} onChange={(e) => handleInputChange(index, 'courseTitle', e.target.value)} />
+                    <div className="field">
+                        <label>Subject {index + 1} Course Title:</label>
+                        <InputText value={subject.courseTitle} onChange={(e) => handleInputChange(index, 'courseTitle', e.target.value)} className="inputfield" />
                     </div>
 
-                    <div className="mb-4">
-                        <label className="font-bold block mb-2">
-                            Subject {index + 1} Course Type:
-                        </label>
-                        <InputText className="w-full p-inputtext-lg" value={subject.courseType} onChange={(e) => handleInputChange(index, 'courseType', e.target.value)} />
+                    <div className="field">
+                        <label>Subject {index + 1} Course Type:</label>
+                        <InputText value={subject.courseType} onChange={(e) => handleInputChange(index, 'courseType', e.target.value)} className="inputfield" />
                     </div>
 
-                    <div className="mb-4">
-                        <label className="font-bold block mb-2">
-                            Subject {index + 1} Course Nature:
-                        </label>
-                        <InputText className="w-full p-inputtext-lg" value={subject.courseNature} onChange={(e) => handleInputChange(index, 'courseNature', e.target.value)} />
+                    <div className="field">
+                        <label>Subject {index + 1} Course Nature:</label>
+                        <InputText value={subject.courseNature} onChange={(e) => handleInputChange(index, 'courseNature', e.target.value)} className="inputfield" />
                     </div>
                 </div>
             ))}
 
-            <div className="mt-4">
-                <Button label="Submit" className="w-full" />
-            </div>
+            <Button label="Submit" className="submit-btn" />
         </div>
+        </>
     );
 }
