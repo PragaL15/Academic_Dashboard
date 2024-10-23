@@ -15,6 +15,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "../../styles/checkbox.css";
 
+
 export default function CustomFilterDemo() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
