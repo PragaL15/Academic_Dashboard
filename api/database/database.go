@@ -1,82 +1,85 @@
-// database/database.go
-
-package database
+package main
 
 import (
-    "database/sql"
-    "fmt"
-    "github.com/joho/godotenv"
-    _ "github.com/lib/pq"
-    "os"
-    "strconv"
+	"database/sql"
+	
+	"github.com/gofiber/fiber/v2"
+	_ "github.com/jackc/pgx/v5"
+	"log"
 )
 
-var Db *sql.DB 
-
-// ConnectDatabase establishes a connection to the PostgreSQL database.
-func ConnectDatabase() {
-    err := godotenv.Load()
-    if err != nil {
-        fmt.Println("Error occurred loading .env file. Please check:", err)
-        return
-    }
-    
-    host := os.Getenv("HOST")
-    port, err := strconv.Atoi(os.Getenv("PORT"))
-    if err != nil {
-        fmt.Println("Invalid port:", err)
-        return
-    }
-    user := os.Getenv("USER")
-    dbname := os.Getenv("DB_NAME")
-    pass := os.Getenv("PASSWORD")
-
-    psqlSetup := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
-        host, port, user, dbname, pass)
-    
-    db, errSql := sql.Open("postgres", psqlSetup)
-    if errSql != nil {
-        fmt.Println("There is an error while connecting to the database:", errSql)
-        return
-    } 
-    Db = db
-    fmt.Println("Successfully connected to database!")
+type UploadDetails struct {
+	Name                   string `json:"name"`
+	Department             string `json:"department"`
+	Designation            string `json:"designation"`
+	ReportingTo            string `json:"reporting_to"`
+	Responsibilities       string `json:"responsibilities"`
+	AcademicWorkloadTheory int    `json:"academic_workload_theory"`
+	AcademicWorkloadLab    int    `json:"academic_workload_lab"`
+	NoOfSubjects           int    `json:"no_of_subjects"`
+	Sub1                   int    `json:"sub1,omitempty"`
+	Sub2                   int    `json:"sub2,omitempty"`
+	Sub3                   int    `json:"sub3,omitempty"`
+	Sub4                   int    `json:"sub4,omitempty"`
+	Sub5                   int    `json:"sub5,omitempty"`
+	Sub6                   int    `json:"sub6,omitempty"`
 }
 
-// Students represents the student structure
-type Students struct {
-    ID        int    `json:"id"`
-    Rollno    string `json:"rollno"`
-    Name      string `json:"name"`
-    Email     string `json:"email"`
-    Year      int    `json:"year"`
-    Department string `json:"department"`
-    Dob       string `json:"dob"`
-    Mobileno  string `json:"mobileno"`
-    Bio       string `json:"bio"`
-    Status    string `json:"status"`
+type sub1 struct {
+	Dept1          int `json:"dept1"`
+	Course_code1   int `json:"course_code1"`
+	Course_id1     int `json:"course_id1"`
+	Course_title1  int `json:"course_title1"`
+	Course_type1   int `json:"course_type1"`
+	Course_nature1 int `json:"course_nature1"`
 }
 
-// GetAllUsers retrieves all students from the database.
-func GetAllUsers() ([]Students, error) {
-    rows, err := Db.Query("SELECT id, rollno, name, email, year, department, dob, mobileno, bio, status FROM students")
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+func main() {
+	app := fiber.New()
 
-    var students []Students
-    for rows.Next() {
-        var student Students
-        if err := rows.Scan(&student.ID, &student.Rollno, &student.Name, &student.Email, &student.Year, &student.Department, &student.Dob, &student.Mobileno, &student.Bio, &student.Status); err != nil {
-            return nil, err
-        }
-        students = append(students, student)
-    }
+	db, err := sql.Open("pgx", "host=localhost user=PragalyaK dbname=academic_portal password=pragalya123 sslmode=disable")
+	if err != nil {
+		log.Fatal("Error connecting to the database:", err)
+	}
+	defer db.Close()
 
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	app.Post("/upload", func(c *fiber.Ctx) error {
+		var details UploadDetails
 
-    return students, nil
+		if err := c.BodyParser(&details); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+		}
+
+		query := `INSERT INTO upload_details (name, department, designation, reporting_to, responsibilities, 
+            academic_workload_theory, academic_workload_lab, no_of_subjects, sub1, sub2, sub3, sub4, sub5, sub6) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`
+
+		values := []interface{}{
+			details.Name,
+			details.Department,
+			details.Designation,
+			details.ReportingTo,
+			details.Responsibilities,
+			details.AcademicWorkloadTheory,
+			details.AcademicWorkloadLab,
+			details.NoOfSubjects,
+		}
+
+		for i := 1; i <= 6; i++ {
+			if i <= details.NoOfSubjects {
+				values = append(values, 1) 
+			} else {
+				values = append(values, nil)
+			}
+		}
+
+		_, err = db.Exec(query, values...)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Error inserting data into database"})
+		}
+
+		return c.JSON(fiber.Map{"message": "Data uploaded successfully"})
+	})
+
+	log.Fatal(app.Listen(":8000"))
 }

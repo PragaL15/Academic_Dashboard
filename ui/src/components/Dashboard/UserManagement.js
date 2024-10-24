@@ -83,7 +83,9 @@ export default function CustomFilterDemo() {
         toast.current.show({
           severity: "info",
           summary: `${message}d`,
-          detail: `Request with IDs: ${checkedItems.join(", ")} have been ${message.toLowerCase()}d`,
+          detail: `Request with IDs: ${checkedItems.join(
+            ", "
+          )} have been ${message.toLowerCase()}d`,
           life: 3000,
         });
 
@@ -121,10 +123,14 @@ export default function CustomFilterDemo() {
       <div className="flex justify-between items-center mt-12">
         <h2>Customers</h2>
         <div className="flex items-center">
-          <IconField iconPosition="left" className="search-icon-field">
+          <IconField
+            iconPosition="left"
+            className="search-icon-field p-3 flex items-center"
+          >
             <InputIcon className="pi pi-search" />
-            <InputText placeholder="Search" className="search-input" />
+            <InputText placeholder="Search" className="search-input p-2" />
           </IconField>
+
           <Button
             icon="pi pi-filter"
             className="p-button-text p-button-rounded ml-2"
@@ -167,39 +173,43 @@ export default function CustomFilterDemo() {
           header="Registration Number"
           body={representativeBodyTemplate}
         />
-        <Column 
-          field="academicWorkload" 
-          header="Academic Workload Theory" 
+        <Column
+          field="academicWorkload"
+          header="Academic Workload Theory"
           body={(rowData) => (
-            <InputText 
-              type="number" 
-              value={rowData.academicWorkload} 
+            <InputText
+              type="number"
+              value={rowData.academicWorkload}
               onChange={(e) => {
                 const newWorkload = parseInt(e.target.value, 10) || 0;
-                setCustomers(prevCustomers =>
-                  prevCustomers.map(customer =>
-                    customer.id === rowData.id ? { ...customer, academicWorkload: newWorkload } : customer
+                setCustomers((prevCustomers) =>
+                  prevCustomers.map((customer) =>
+                    customer.id === rowData.id
+                      ? { ...customer, academicWorkload: newWorkload }
+                      : customer
                   )
                 );
-              }} 
+              }}
             />
           )}
         />
-        <Column 
-          field="academicLab" 
-          header="Academic Theory Lab" 
+        <Column
+          field="academicLab"
+          header="Academic Theory Lab"
           body={(rowData) => (
-            <InputText 
-              type="number" 
-              value={rowData.academicLab} 
+            <InputText
+              type="number"
+              value={rowData.academicLab}
               onChange={(e) => {
                 const newLab = parseInt(e.target.value, 10) || 0;
-                setCustomers(prevCustomers =>
-                  prevCustomers.map(customer =>
-                    customer.id === rowData.id ? { ...customer, academicLab: newLab } : customer
+                setCustomers((prevCustomers) =>
+                  prevCustomers.map((customer) =>
+                    customer.id === rowData.id
+                      ? { ...customer, academicLab: newLab }
+                      : customer
                   )
                 );
-              }} 
+              }}
             />
           )}
         />
@@ -228,7 +238,7 @@ export default function CustomFilterDemo() {
           body={(rowData) => (
             <Button
               icon={<RemoveRedEyeIcon />}
-              onClick={() => openDialog(rowData)} // Open dialog on button click
+              onClick={() => openDialog(rowData)}
               className="p-button-text"
             />
           )}
@@ -238,60 +248,98 @@ export default function CustomFilterDemo() {
       {checkedItems.length > 0 && (
         <div className="flex justify-content-center mt-3">
           <Button
-            onClick={(e) => handleApproval(e, true)} // Approve
+            onClick={(e) => handleApproval(e, true)}
             label="Approve"
-            className="p-button-success mr-2"
+            className="p-button-success mr-2 bg-green-800 text-cyan-50 text-s p-2"
           />
           <Button
-            onClick={(e) => handleApproval(e, false)} // Reject
+            onClick={(e) => handleApproval(e, false)}
             label="Reject"
-            className="p-button-danger"
+            className="p-button-danger bg-red-600 text-cyan-50 text-s p-2"
           />
         </div>
       )}
-      
-      {/* Dialog for viewing customer details */}
       <Dialog
         header="Customer Details"
         visible={visible}
         position="top"
-        style={{ minWidth: "50vw" }}
         onHide={() => setVisible(false)}
         draggable={false}
         resizable={false}
       >
         {selectedCustomer && (
-          <div className="p-fluid">
-            <div className="field">
-              <label htmlFor="name">Name:</label>
-              <InputText id="name" value={selectedCustomer.name} readOnly />
+          <>
+            <div className="field flex items-center mb-4">
+              <label htmlFor="name" className="w-1/3 text-right mr-2 font-bold">
+                Name:
+              </label>
+              <InputText
+                className="flex-grow border-gray-300 rounded-md"
+                id="name"
+                value={selectedCustomer.name}
+                readOnly
+              />
             </div>
-            <div className="field">
-              <label htmlFor="academicWorkload">Academic Workload:</label>
-              <InputText id="academicWorkload" value={selectedCustomer.academicWorkload} readOnly />
+
+            <div className="field flex items-center mb-4">
+              <label
+                htmlFor="academicWorkload"
+                className="w-1/3 text-right mr-2 font-bold"
+              >
+                Academic Workload:
+              </label>
+              <InputText
+                className="flex-grow border-gray-300 rounded-md"
+                id="academicWorkload"
+                value={selectedCustomer.academicWorkload}
+                readOnly
+              />
             </div>
-            <div className="field">
-              <label htmlFor="academicLab">Academic Lab:</label>
-              <InputText id="academicLab" value={selectedCustomer.academicLab} readOnly />
+
+            {/* Row for Academic Lab */}
+            <div className="field flex items-center mb-4">
+              <label
+                htmlFor="academicLab"
+                className="w-1/3 text-right mr-2 font-bold"
+              >
+                Academic Lab:
+              </label>
+              <InputText
+                className="flex-grow border-gray-300 rounded-md"
+                id="academicLab"
+                value={selectedCustomer.academicLab}
+                readOnly
+              />
             </div>
-            <div className="field">
-              <label htmlFor="status">Status:</label>
-              <Tag value={selectedCustomer.status} style={{
-                backgroundColor:
-                  selectedCustomer.status === "Rejected"
-                    ? "red"
-                    : selectedCustomer.status === "Approved"
-                    ? "green"
-                    : selectedCustomer.status === "Initiated"
-                    ? "blue"
-                    : "gray",
-                color: "white",
-              }} />
+
+            {/* Row for Status */}
+            <div className="field flex items-center mb-4">
+              <label
+                htmlFor="status"
+                className="w-1/3 text-right mr-1 font-bold"
+              >
+                Status:
+              </label>
+              <Tag
+                value={selectedCustomer.status}
+                style={{
+                  backgroundColor:
+                    selectedCustomer.status === "Rejected"
+                      ? "red"
+                      : selectedCustomer.status === "Approved"
+                      ? "green"
+                      : selectedCustomer.status === "Initiated"
+                      ? "blue"
+                      : "gray",
+                  color: "white",
+                  borderRadius: "5px",
+                  padding: "0.25rem 0.5rem",
+                }}
+              />
             </div>
-          </div>
+          </>
         )}
       </Dialog>
-
       <Toast ref={toast} />
       <ConfirmPopup />
     </div>
