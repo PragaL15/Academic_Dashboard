@@ -1,42 +1,21 @@
-// main.go
-
 package main
 
 import (
-	  "fmt"
-    "net/http"
-    "github.com/gin-gonic/gin"
-    "github.com/PrashanthSai-K/GitPortal/api/database"
-    "github.com/PrashanthSai-K/GitPortal/api/router"
+    "fmt"
+    "github.com/PragaL15/Academic_Dashboard/api/database"
+    "github.com/PragaL15/Academic_Dashboard/api/router"
+    "github.com/gofiber/fiber/v2"
+    log "github.com/sirupsen/logrus"
+    "github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
-    // Connect to the database
+    app := fiber.New()
+    app.Use(cors.New())
     database.ConnectDatabase()
-
-    // Initialize router
-    r := router.InitRouter()
-
-    // GET method to retrieve all users
-    r.GET("/users", getUsers)
-
-    // Run the server
-    err := r.Run(":8080")
-    if err != nil {
-        panic(err)
+    fmt.Println("Connected to the database")
+    router.SetupRoutes(app) //this function should be router package and in same name
+    if err := app.Listen(":4500"); err != nil {
+        log.Fatalf("Error starting server: %v", err)
     }
-}
-
-// Handler function for GET /users
-func getUsers(c *gin.Context) {
-    users, err := database.GetAllUsers()
-    if err != nil {
-        // Log the error for debugging
-        fmt.Println("Error retrieving users:", err)
-
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve users"})
-        return
-    }
-
-    c.JSON(http.StatusOK, users)
 }

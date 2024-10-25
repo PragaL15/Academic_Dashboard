@@ -1,10 +1,11 @@
-// router/router.go
-
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+   
+    userHandler "github.com/PragaL15/Academic_Dashboard/api/src/handlers/user"
+     "github.com/gofiber/fiber/v2"
+)
 
-// InitRouter initializes the Gin router.
-func InitRouter() *gin.Engine {
-    return gin.Default()
+func SetupRoutes(app *fiber.App) {
+    app.Post("/upload-details", userHandler.HandlePostRequest)
 }

@@ -1,85 +1,75 @@
-package main
-
+package database
 import (
-	"database/sql"
-	
-	"github.com/gofiber/fiber/v2"
-	_ "github.com/jackc/pgx/v5"
+	"fmt"
 	"log"
+	"os"
+    "github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
+// Declare a global variable to hold the database connection
+var DB *gorm.DB
+
+// Define your table structure using GORM model struct
 type UploadDetails struct {
-	Name                   string `json:"name"`
-	Department             string `json:"department"`
-	Designation            string `json:"designation"`
-	ReportingTo            string `json:"reporting_to"`
-	Responsibilities       string `json:"responsibilities"`
-	AcademicWorkloadTheory int    `json:"academic_workload_theory"`
-	AcademicWorkloadLab    int    `json:"academic_workload_lab"`
-	NoOfSubjects           int    `json:"no_of_subjects"`
-	Sub1                   int    `json:"sub1,omitempty"`
-	Sub2                   int    `json:"sub2,omitempty"`
-	Sub3                   int    `json:"sub3,omitempty"`
-	Sub4                   int    `json:"sub4,omitempty"`
-	Sub5                   int    `json:"sub5,omitempty"`
-	Sub6                   int    `json:"sub6,omitempty"`
+	ID                     uint   `gorm:"primaryKey"`
+	Name                   string `gorm:"size:255"`
+	Department             string `gorm:"size:255"`
+	Designation            string `gorm:"size:255"`
+	ReportingTo            string `gorm:"size:255"`
+	Responsibilities       string `gorm:"type:text"`
+	AcademicWorkloadTheory int
+	AcademicWorkloadLab    int
+	NoOfSubjects           int
+	Sub1                   int
+	Sub2                   int
+	Sub3                   int
+	Sub4                   int
+	Sub5                   int
+	Sub6                   int
 }
+//Adding handler function for POST request 
 
-type sub1 struct {
-	Dept1          int `json:"dept1"`
-	Course_code1   int `json:"course_code1"`
-	Course_id1     int `json:"course_id1"`
-	Course_title1  int `json:"course_title1"`
-	Course_type1   int `json:"course_type1"`
-	Course_nature1 int `json:"course_nature1"`
-}
-
-func main() {
-	app := fiber.New()
-
-	db, err := sql.Open("pgx", "host=localhost user=PragalyaK dbname=academic_portal password=pragalya123 sslmode=disable")
-	if err != nil {
-		log.Fatal("Error connecting to the database:", err)
+func HandlePostRequest(c *fiber.Ctx) error {
+	// Parse incoming request body
+	uploaddetails := new(UploadDetails)
+	if err := c.BodyParser(uploaddetails); err != nil {
+		log.Println("Error parsing request body:", err)
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid request format")
 	}
-	defer db.Close()
 
-	app.Post("/upload", func(c *fiber.Ctx) error {
-		var details UploadDetails
+	// Process the data (e.g., save to database)
+	log.Printf("Received user: %+v\n", uploaddetails)
 
-		if err := c.BodyParser(&details); err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
-		}
-
-		query := `INSERT INTO upload_details (name, department, designation, reporting_to, responsibilities, 
-            academic_workload_theory, academic_workload_lab, no_of_subjects, sub1, sub2, sub3, sub4, sub5, sub6) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`
-
-		values := []interface{}{
-			details.Name,
-			details.Department,
-			details.Designation,
-			details.ReportingTo,
-			details.Responsibilities,
-			details.AcademicWorkloadTheory,
-			details.AcademicWorkloadLab,
-			details.NoOfSubjects,
-		}
-
-		for i := 1; i <= 6; i++ {
-			if i <= details.NoOfSubjects {
-				values = append(values, 1) 
-			} else {
-				values = append(values, nil)
-			}
-		}
-
-		_, err = db.Exec(query, values...)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Error inserting data into database"})
-		}
-
-		return c.JSON(fiber.Map{"message": "Data uploaded successfully"})
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "User data received",
+		"data":   "uploaddetails",
 	})
+}
 
-	log.Fatal(app.Listen(":8000"))
+
+
+// ConnectDatabase initializes the database connection
+func ConnectDatabase() {
+	// Load environment variables from the .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	// Fetch the database connection details from the .env file
+	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ")/" + os.Getenv("DB_NAME") + "?charset=utf8mb4&parseTime=True&loc=Local"
+
+	// Connect to the MySQL database using GORM
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	// Automatically migrate the schema
+	DB.AutoMigrate(&UploadDetails{})
+	fmt.Println("Database connected and migration completed.")
 }
