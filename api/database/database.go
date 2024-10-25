@@ -1,9 +1,11 @@
 package database
+
 import (
 	"fmt"
 	"log"
 	"os"
-    "github.com/gofiber/fiber/v2"
+
+	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -30,8 +32,8 @@ type UploadDetails struct {
 	Sub5                   int
 	Sub6                   int
 }
-//Adding handler function for POST request 
 
+// Adding handler function for POST request
 func HandlePostRequest(c *fiber.Ctx) error {
 	// Parse incoming request body
 	uploaddetails := new(UploadDetails)
@@ -41,35 +43,40 @@ func HandlePostRequest(c *fiber.Ctx) error {
 	}
 
 	// Process the data (e.g., save to database)
+	if err := DB.Create(uploaddetails).Error; err != nil {
+		log.Println("Error saving to database:", err)
+		return c.Status(fiber.StatusInternalServerError).SendString("Error saving data")
+	}
+
 	log.Printf("Received user: %+v\n", uploaddetails)
 
 	return c.JSON(fiber.Map{
 		"status":  "success",
 		"message": "User data received",
-		"data":   "uploaddetails",
+		"data":    uploaddetails, // Return the actual uploaded details
 	})
 }
 
-
-
 // ConnectDatabase initializes the database connection
-func ConnectDatabase() {
-	// Load environment variables from the .env file
+func ConnectDatabase() error {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Error loading .env file")
+		return fmt.Errorf("Error loading .env file: %v", err)
 	}
 
 	// Fetch the database connection details from the .env file
 	dsn := os.Getenv("DB_USER") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ")/" + os.Getenv("DB_NAME") + "?charset=utf8mb4&parseTime=True&loc=Local"
 
-	// Connect to the MySQL database using GORM
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+	var connErr error
+	DB, connErr = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if connErr != nil {
+		return fmt.Errorf("Failed to connect to database: %v", connErr)
 	}
 
-	// Automatically migrate the schema
-	DB.AutoMigrate(&UploadDetails{})
+	if err := DB.AutoMigrate(&UploadDetails{}); err != nil {
+		return fmt.Errorf("Failed to migrate database: %v", err)
+	}
+
 	fmt.Println("Database connected and migration completed.")
+	return nil
 }
