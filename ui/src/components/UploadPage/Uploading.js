@@ -126,56 +126,13 @@ export default function UploadingPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); 
-    if (
-      subjectFields.every(
-        (subject) => subject.courseCode && subject.courseTitle
-      )
-    ) {
-      try {
-        const formData = {
-          name,
-          designation,
-          department,
-          reportingTo,
-          responsibilities,
-          academicWorkloadTheory,
-          academicWorkloadLab,
-          subjects: subjectFields,
-        };
+const handleSubmit=()=>{
   
-        const response = await axios.post("/user/upload_details", formData); 
-  
-        if (response.status === 200) {
-          toast.current.show({
-            severity: "success",
-            summary: "Success",
-            detail: "Form submitted successfully!",
-            life: 3000,
-          });
-          console.log("Form Data Sent:", formData);
-  
-          setShowStepper(false);
-        }
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: "Failed to submit the form. Please try again.",
-          life: 3000,
-        });
-      }
-    } else {
-        toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Please fill all fields",
-        life: 3000,
-      });
-    }
-  };
+}
+
+
+
+
   
   return (
     <div className="p-6 bg-transparent">
