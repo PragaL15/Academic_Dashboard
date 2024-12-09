@@ -6,10 +6,10 @@ const Dashboard = () => {
   return (
     <>
       <div className=' h-screen'>
-        <TopBar />
-        <Sidebar />
+        <TopBar /> {/* Top navbar */}
+        <Sidebar /> {/* Side navbar */}
         <div className='w-full md:pl-60 md:pt-20 md:pr-8 p-3 bg-gray-100 h-full '>
-            <UserTable />
+            <UserTable /> {/* usertable */}
         </div>
       </div>
     </>
