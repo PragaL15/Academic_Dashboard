@@ -1,0 +1,102 @@
+.premium-card {
+  background-color: #f9f9f9;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+.section-title {
+  color: #444;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.field label {
+  font-weight: bold;
+  color: #333;
+  font-size: 1rem;
+  margin-right: 1rem;
+  width: 30%;
+}
+
+.inputfield,
+.dropdown-input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 65%;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.inputfield:hover, 
+.inputfield:focus,
+.dropdown-input:hover, 
+.dropdown-input:focus {
+  border-color: #00796b;
+  outline: none;
+}
+
+.subject-card {
+  background-color: #e0f7fa;
+  border: 1px solid #b2ebf2;
+  padding: 1rem;
+  margin-top: 2rem;
+  border-radius: 8px;
+}
+
+.subject-card h4 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #00796b;
+}
+
+.submit-btn {
+  width: 10%;
+  padding: 0.75rem;
+  background-color: #2196f3;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #1976d2;
+}
+
+@media (max-width: 600px) {
+  .field {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .field label {
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+
+  .inputfield,
+  .dropdown-input {
+    width: 100%;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+}

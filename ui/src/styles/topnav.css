@@ -1,0 +1,39 @@
+/* Ensure the topbar is fixed to the top and spans the full width */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000; /* To make sure it's above other elements */
+  margin: 0;
+  padding: 0;
+}
+
+/* Adjust the body and container to avoid the topbar overlapping content */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  padding-top: 3rem; /* Adjust this depending on the height of the topbar */
+}
+
+/* Sidebar should be aligned properly with the topbar */
+.sidebar {
+  position: fixed;
+  top: 3rem; /* Adjust to match the topbar height */
+  bottom: 0;
+  left: 0;
+  width: 250px; /* Adjust width based on sidebar size */
+  padding: 0;
+  margin: 0;
+  background-color: #f1f5f9; /* Match sidebar background */
+}
+
+/* Ensure the content area starts after the sidebar */
+.content {
+  margin-left: 250px; /* Same width as the sidebar */
+  padding: 1rem;
+}
