@@ -1,0 +1,26 @@
+.dashboard-container {
+  display: flex;
+  position: relative; /* Allowing child elements to use absolute positioning */
+}
+
+.topbar {
+  position: relative;
+  z-index: 1; /* Ensures the topbar is at a lower level */
+  width: 100%; /* Full width for the top navigation */
+  background-color: #fff;
+}
+
+.sidebar {
+  position: fixed; /* Sidebar stays fixed and overlaps */
+  top: 0; /* Start from the top */
+  left: 0; /* Stick to the left side */
+  width: 250px; /* Adjust width as needed */
+  height: 100%; /* Full height of the screen */
+  z-index: 2;
+  background-color: #0F3B99; 
+}
+
+.user-table-container {
+  margin-left: 250px; /* Leave space for the sidebar */
+  padding: 20px;
+}

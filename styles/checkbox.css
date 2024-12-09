@@ -1,0 +1,71 @@
+/* styles/confirmationPopup.css */
+.p-confirm-dialog {
+  background-color: #f8f9fa; /* Light background color */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.p-confirm-dialog .p-confirm-dialog-header {
+  background-color: #007bff; /* Header background color */
+  color: white; /* Header text color */
+  padding: 10px; /* Padding for header */
+}
+
+.p-confirm-dialog .p-confirm-dialog-content {
+  color: #333; /* Content text color */
+  font-size: 16px; /* Content text size */
+  padding: 20px; /* Padding for content */
+}
+
+.p-confirm-dialog .p-button {
+  border-radius: 20px; /* Rounded button */
+  padding: 10px 20px; /* Button padding */
+}
+
+/* styles/toast.css */
+.p-toast {
+  border-radius: 8px; /* Rounded corners */
+  background-color: #fff; /* Background color */
+}
+
+.p-toast .p-toast-message {
+  border-left: 4px solid transparent; /* Left border for severity indication */
+  padding: 10px; /* Padding inside the message */
+}
+
+.p-toast .p-toast-message-success {
+  border-left-color: #28a745; /* Green for success */
+}
+
+.p-toast .p-toast-message-info {
+  border-left-color: #17a2b8; /* Blue for info */
+}
+
+.p-toast .p-toast-message-warn {
+  border-left-color: #ffc107; /* Yellow for warning */
+}
+
+.p-toast .p-toast-message-error {
+  border-left-color: #dc3545; /* Red for error */
+}
+
+/* Default style for the checkbox wrapper */
+.custom-checkbox .p-checkbox-box {
+  border: 2px solid grey; /* Default grey border */
+}
+
+/* Style for the checked state */
+.custom-checkbox .p-checkbox-box.p-highlight {
+  background-color: white; /* No change to background */
+  border: 2px solid grey; /* Keep border grey */
+}
+
+/* Style for the checkbox tick */
+.custom-checkbox .p-checkbox-box.p-highlight .p-checkbox-icon {
+  color: black; /* Change the tick color to black */
+}
+
+/* Optional: Hover effect for visual feedback */
+.custom-checkbox .p-checkbox-box:hover {
+  border-color: darkgrey;
+}

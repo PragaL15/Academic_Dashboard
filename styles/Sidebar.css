@@ -1,0 +1,25 @@
+/* Sidebar.css */
+
+.custom-menu {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ensure the sidebar takes the full height */
+  background-color: #0F3B99 !important; /* Blue background */
+}
+
+.menu-items {
+  flex-grow: 1; /* Allows this section to grow and take the remaining space */
+}
+
+.logout-button {
+  margin-top: auto; /* Pushes the logout button to the bottom */
+  padding: 1rem;
+}
+
+.p-menuitem-link {
+  color: white !important; /* Text color */
+}
+
+.p-menuitem-link:hover {
+  background-color: #0D357A !important; /* Hover color */
+}
